@@ -32,7 +32,41 @@ function userBuildTableRow(user) {
       "<td>" + user.id + "</td>" +
       "<td>" + user.firstname + "</td>" +
       "<td>" + user.lastname + "</td>" +
+      "<td><button class='btn btn-danger btn-sm delete-btn' data-id='" + user.id + "'>Delete</button></td>" +
+      "<td><button class='btn btn-warning btn-sm update-btn' data-id='" + user.id + "'>Update</button></td>" +
       "</tr>";
+}
+
+$(document).on('click', '.delete-btn', function() {
+    var id = $(this).data('id');
+    deleteUser(id);
+});
+
+$(document).on('click', '.update-btn', function() {
+    var id = $(this).data('id');
+    var firstname = $(this).closest('tr').find('td:eq(0)').text();
+    var lastname = $(this).closest('tr').find('td:eq(1)').text();
+    editUser(id, firstname, lastname);
+});
+
+function deleteUser(id) {
+    $.ajax({
+        url: 'http://localhost:8080/api/users/' + id,
+        type: 'DELETE',
+        success: function () {
+            userList();
+        },
+        error: function (request, message, error) {
+            handleException(request, message, error);
+        }
+    });
+}
+
+function editUser(id, firstname, lastname) {
+    currentUserId = id;
+    $("#firstname").val(firstname);
+    $("#lastname").val(lastname);
+    $("#updateButton").text("Update");
 }
 
 function handleException(request, message, error) {
@@ -70,6 +104,22 @@ function userAdd(user) {
          handleException(request, message, error);
       }
    });
+}
+
+function updateUser(id, user) {
+    $.ajax({
+        url: 'http://localhost:8080/api/users/' + id,
+        type: 'PUT',
+        contentType: "application/json;charset=utf-8",
+        data: JSON.stringify(user),
+        success: function () {
+            formClear();
+            userList();
+        },
+        error: function (request, message, error) {
+            handleException(request, message, error);
+        }
+    });
 }
 
 function deleteAllClick() {
