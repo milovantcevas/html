@@ -106,12 +106,11 @@ function userAdd(user) {
    });
 }
 
-function updateUser(id, user) {
+function updateUser(id) {
     $.ajax({
         url: 'http://localhost:8080/api/users/' + id,
         type: 'PUT',
         contentType: "application/json;charset=utf-8",
-        data: JSON.stringify(user),
         success: function () {
             formClear();
             userList();
