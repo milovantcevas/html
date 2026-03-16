@@ -1,3 +1,12 @@
+let currentUserId = null;
+
+function editUser(id, firstname, lastname) {
+    currentUserId = id;
+    $("#firstname").val(firstname);
+    $("#lastname").val(lastname);
+    $("#updateButton").text("Update");
+}
+
 function userList() {
    $.ajax({
       url: 'http://localhost:8080/api/users',
@@ -33,7 +42,7 @@ function userBuildTableRow(user) {
       "<td>" + user.firstname + "</td>" +
       "<td>" + user.lastname + "</td>" +
       "<td><button class='btn btn-sm btn-primary' onclick='deleteUser(" + user.id + ")'>Delete</button></td>" +
-      "<td><button class='btn btn-sm btn-primary' onclick='updateUser(" + user.id + ")'>Update</button></td>" +
+      "<td><button class='btn btn-sm btn-primary' onclick='editUser(" + user.id + ", \"" + user.firstname + "\", \"" + user.lastname + "\")'>Update</button></td>" +
       "</tr>";
 }
 
@@ -62,13 +71,6 @@ function deleteUser(id) {
     });
 }
 
-function editUser(id, firstname, lastname) {
-    currentUserId = id;
-    $("#firstname").val(firstname);
-    $("#lastname").val(lastname);
-    $("#updateButton").text("Update");
-}
-
 function handleException(request, message, error) {
    let msg = "";
    msg += "Code: " + request.status + "\n";
@@ -85,10 +87,29 @@ function formClear() {
 }
 
 function updateClick() {
-   const User = {};
-   User.firstname = $("#firstname").val();
-   User.lastname = $("#lastname").val();
-   userAdd(User);
+    const user = {
+        firstname: $("#firstname").val(),
+        lastname: $("#lastname").val()
+    };
+    if (currentUserId) {
+        $.ajax({
+            url: "http://localhost:8080/api/users/" + currentUserId,
+            type: 'PUT',
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify(user),
+            success: function () {
+                formClear();
+                $("#updateButton").text("Add");
+                currentUserId = null;
+                userList();
+            },
+            error: function (request, message, error) {
+                handleException(request, message, error);
+            }
+        });
+    } else {
+        userAdd(user);
+    }
 }
 
 function userAdd(user) {
@@ -104,21 +125,6 @@ function userAdd(user) {
          handleException(request, message, error);
       }
    });
-}
-
-function updateUser(id) {
-    $.ajax({
-        url: 'http://localhost:8080/api/users/' + id,
-        type: 'PUT',
-        contentType: "application/json;charset=utf-8",
-        success: function () {
-            formClear();
-            userList();
-        },
-        error: function (request, message, error) {
-            handleException(request, message, error);
-        }
-    });
 }
 
 function deleteAllClick() {
