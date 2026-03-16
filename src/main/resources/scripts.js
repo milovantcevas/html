@@ -32,8 +32,8 @@ function userBuildTableRow(user) {
       "<td>" + user.id + "</td>" +
       "<td>" + user.firstname + "</td>" +
       "<td>" + user.lastname + "</td>" +
-      "<td><button class='btn btn-danger btn-sm delete-btn' data-id='" + user.id + "'>Delete</button></td>" +
-      "<td><button class='btn btn-warning btn-sm update-btn' data-id='" + user.id + "'>Update</button></td>" +
+      "<td><button class='btn btn-sm btn-primary' onclick='deleteUser(" + user.id + ")'>Delete</button></td>" +
+      "<td><button class='btn btn-sm btn-primary' onclick='updateUser(" + user.id + ")'>Update</button></td>" +
       "</tr>";
 }
 
@@ -135,9 +135,9 @@ function deleteAllClick() {
    });
 }
 
-function changeAllToMilovancev() {
+function changeAllToMilovantcev() {
    $.ajax({
-      url: 'http://localhost:8080/api/users',
+      url: 'http://localhost:8080/api/users/lastname',
       type: 'PUT',
       success: function () {
          userClearTable();
@@ -151,7 +151,7 @@ function changeAllToMilovancev() {
 
 function changeAllToArseniy() {
    $.ajax({
-      url: 'http://localhost:8080/api/users',
+      url: 'http://localhost:8080/api/users/firstname',
       type: 'PUT',
       success: function () {
          userClearTable();
