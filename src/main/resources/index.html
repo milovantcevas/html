@@ -21,6 +21,7 @@
                       <th>Id</th>
                      <th>Firstname</th>
                      <th>LastName</th>
+                      <th>Age</th>
                       <th>Delete</th>
                       <th>Update</th>
                   </tr>
@@ -49,6 +50,10 @@
          <label for="lastname">Lastname</label>
          <input type="text" id="lastname" class="form-control"/>
       </div>
+      <div class="form-group">
+          <label for="age">Age</label>
+          <input type="text" id="age" class="form-control"/>
+      </div>
       <div class="row">
          <div class="col-xs-12">
             <button type="button"
@@ -68,6 +73,15 @@
             Delete
             </button>
          </div>
+      </div>
+      <div class="row">
+          <div class="col-xs-12">
+              <button type="button"
+                      class="btn btn-primary"
+                      onclick="changeAllTo100();">
+                  Change All Age To 100
+              </button>
+          </div>
       </div>
       <div class="row">
           <div class="col-xs-12">

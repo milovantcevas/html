@@ -1,9 +1,10 @@
 let currentUserId = null;
 
-function editUser(id, firstname, lastname) {
+function editUser(id, firstname, lastname, age) {
     currentUserId = id;
     $("#firstname").val(firstname);
     $("#lastname").val(lastname);
+    $("#age").val(age);
     $("#updateButton").text("Update");
 }
 
@@ -22,6 +23,7 @@ function userList() {
 }
 
 function userListSuccess(users) {
+   $("#userTable tbody").remove();
    $.each(users, function (index, user) {
       userAddRow(user);
    });
@@ -41,6 +43,7 @@ function userBuildTableRow(user) {
       "<td>" + user.id + "</td>" +
       "<td>" + user.firstname + "</td>" +
       "<td>" + user.lastname + "</td>" +
+      "<td>" + user.age + "</td>" +
       "<td><button class='btn btn-sm btn-primary' onclick='deleteUser(" + user.id + ")'>Delete</button></td>" +
       "<td><button class='btn btn-sm btn-primary' onclick='editUser(" + user.id + ", \"" + user.firstname + "\", \"" + user.lastname + "\")'>Update</button></td>" +
       "</tr>";
@@ -55,7 +58,8 @@ $(document).on('click', '.update-btn', function() {
     var id = $(this).data('id');
     var firstname = $(this).closest('tr').find('td:eq(0)').text();
     var lastname = $(this).closest('tr').find('td:eq(1)').text();
-    editUser(id, firstname, lastname);
+    var age = $(this).data('age');
+    editUser(id, firstname, lastname, age);
 });
 
 function deleteUser(id) {
@@ -63,7 +67,7 @@ function deleteUser(id) {
         url: 'http://localhost:8080/api/users/' + id,
         type: 'DELETE',
         success: function () {
-            userList();
+             userList();
         },
         error: function (request, message, error) {
             handleException(request, message, error);
@@ -84,12 +88,14 @@ function handleException(request, message, error) {
 function formClear() {
    $("#firstname").val("");
    $("#lastname").val("");
+   $("#age").val("");
 }
 
 function updateClick() {
     const user = {
         firstname: $("#firstname").val(),
-        lastname: $("#lastname").val()
+        lastname: $("#lastname").val(),
+        age: $("#age").val()
     };
     if (currentUserId) {
         $.ajax({
@@ -157,6 +163,20 @@ function changeAllToMilovantcev() {
 function changeAllToArseniy() {
    $.ajax({
       url: 'http://localhost:8080/api/users/firstname',
+      type: 'PUT',
+      success: function () {
+         userClearTable();
+         userList();
+      },
+      error: function (request, message, error) {
+         handleException(request, message, error);
+      }
+   });
+}
+
+function changeAllTo100() {
+   $.ajax({
+      url: 'http://localhost:8080/api/users/age',
       type: 'PUT',
       success: function () {
          userClearTable();

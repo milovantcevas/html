@@ -23,7 +23,7 @@ public class UserController {
         List<UserEntity> users = userRepository.findAll();
         List<UserInfo> resultUsers = new ArrayList<>();
         for (UserEntity user : users) {
-            resultUsers.add(new UserInfo(user.getId(), user.getFirstName(), user.getLastName()));
+            resultUsers.add(new UserInfo(user.getId(), user.getFirstName(), user.getLastName(), user.getAge()));
         }
 
         return ResponseEntity.ok(resultUsers);
@@ -31,8 +31,8 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<UserInfo> createUser(@RequestBody UserInfo userInfo) {
-        UserEntity savedUser = userRepository.save(new UserEntity(userInfo.getFirstName(), userInfo.getLastName()));
-        return ResponseEntity.ok(new UserInfo(savedUser.getId(), userInfo.getFirstName(), userInfo.getLastName()));
+        UserEntity savedUser = userRepository.save(new UserEntity(userInfo.getFirstName(), userInfo.getLastName(), userInfo.getAge()));
+        return ResponseEntity.ok(new UserInfo(savedUser.getId(), savedUser.getFirstName(), savedUser.getLastName(), savedUser.getAge()));
 
     }
 
@@ -62,6 +62,16 @@ public class UserController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/users/age")
+    public ResponseEntity<Void> updateAllAge(){
+        List<UserEntity> users = userRepository.findAll();
+        for(UserEntity user : users){
+            user.setAge(100L);
+        }
+        userRepository.saveAll(users);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<Void> deleteUsersById(@PathVariable ("userId") Long userId){
         userRepository.deleteById(userId);
@@ -73,6 +83,7 @@ public class UserController {
         UserEntity user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
         user.setFirstName(userInfo.getFirstName());
         user.setLastName(userInfo.getLastName());
+        user.setAge(userInfo.getAge());
         userRepository.save(user);
         return ResponseEntity.ok().build();
     }
